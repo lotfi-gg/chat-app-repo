@@ -7,14 +7,18 @@ class FireData {
   final String myUid = FirebaseAuth.instance.currentUser!.uid;
 
   Future createRoom(String email) async {
-    QuerySnapshot userEmail = await firestore
+    QuerySnapshot receiverEmail = await firestore
         .collection('users')
         .where('email', isEqualTo: email)
         .get();
 
-    if (userEmail.docs.isNotEmpty) {
-      String userId = userEmail.docs.first.id;
-      List<String> members = [myUid, userId]..sort((a, b) => a.compareTo(b));
+    if (receiverEmail.docs.isNotEmpty) {
+      String receiverId = receiverEmail.docs.first.id;
+      if (receiverId == myUid) {
+        print('Cannot create room with yourself');
+        return;
+      }
+      List<String> members = [myUid, receiverId]..sort((a, b) => a.compareTo(b));
       QuerySnapshot roomExist = await firestore
           .collection('rooms')
           .where('members', isEqualTo: members)
