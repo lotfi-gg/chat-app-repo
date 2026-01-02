@@ -1,17 +1,22 @@
+
+import 'package:chat_app/firebase/fire_database.dart';
+
 import 'package:chat_app/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ChatScreen extends StatefulWidget {
   final String roomId;
-  final ChatUser chatUser;
-  const ChatScreen({super.key, required this.roomId, required this.chatUser});
+  final ChatUser userInfo;
+  const ChatScreen({super.key, required this.roomId, required this.userInfo});
+
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  TextEditingController msgcon = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,9 +24,11 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.chatUser.name!),
+
+            Text(widget.userInfo.name!),
             Text(
-              widget.chatUser.lastActivated!,
+              widget.userInfo.lastActivated!,
+
               style: Theme.of(context).textTheme.labelLarge,
             ),
           ],
@@ -73,6 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: Card(
                     child: TextField(
+                      controller: msgcon,
                       maxLines: 5,
                       minLines: 1,
                       decoration: InputDecoration(
@@ -99,7 +107,24 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ),
-                IconButton.filled(onPressed: () {}, icon: Icon(Iconsax.send)),
+                IconButton.filled(
+                  onPressed: () {
+                    if (msgcon.text.isNotEmpty) {
+                      FireData()
+                          .sendMessage(
+                            widget.userInfo.id!, // uid or toId
+                            msgcon.text, // msg
+                            widget.roomId, // roomId
+                          )
+                          .then((value) {
+                            setState(() {
+                              msgcon.text = '';
+                            });
+                          });
+                    }
+                  },
+                  icon: Icon(Iconsax.send_1),
+                ),
               ],
             ),
           ],
