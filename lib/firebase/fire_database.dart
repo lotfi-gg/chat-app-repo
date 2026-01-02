@@ -20,7 +20,8 @@ class FireData {
         print('Cannot create room with yourself');
         return;
       }
-      List<String> members = [myUid, receiverId]..sort((a, b) => a.compareTo(b));
+      List<String> members = [myUid, receiverId]
+        ..sort((a, b) => a.compareTo(b));
       QuerySnapshot roomExist = await firestore
           .collection('rooms')
           .where('members', isEqualTo: members)
@@ -28,7 +29,7 @@ class FireData {
 
       if (roomExist.docs.isEmpty) {
         ChatRoom chatRoom = ChatRoom(
-          id: members.toString(),    
+          id: members.toString(),
           members: members,
           lastMessage: '',
           lastMessageTime: DateTime.now().toString(),

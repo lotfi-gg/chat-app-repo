@@ -1,9 +1,15 @@
+import 'package:chat_app/models/message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ChatMessageCard extends StatelessWidget {
   final int index;
-  const ChatMessageCard({super.key, required this.index});
+  final Message messageItem;
+  const ChatMessageCard({
+    super.key,
+    required this.index,
+    required this.messageItem,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +46,7 @@ class ChatMessageCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('this is my message'),
+                  Text(messageItem.msg!),
                   SizedBox(height: 5),
                   Row(
                     mainAxisSize: MainAxisSize.min,
